@@ -1,0 +1,156 @@
+let btn = document.querySelector('.btn'),
+		banner = document.querySelector('.banner_wammy'),
+		wall = document.querySelector('.banner_wall'),
+		speed = 150,
+		snakeLength = 3,
+		snakeColor = "green";
+
+btn.addEventListener("click", ()=>{     // start/stop game
+	
+	var _field = document.querySelector('.field');
+	
+if (!document.querySelectorAll('.field>*').length) {
+		btn.innerText= "Stop Game";
+	for (var i = 0, j = 400; i < j; i++) { // create field cells
+		var cell = document.createElement('div');
+	    cell.className = "cell";
+	   _field.appendChild (cell);
+}
+	let cells = document.querySelectorAll('.cell');
+	
+class Field {
+	constructor () {	
+	}
+	screenReload () {
+		for (let j = 0 ; j < cells.length; j++) {
+				cells[j].style.background = "";
+	   }
+	}
+}
+
+
+class Snake {
+	constructor (cellFirst, color, lengthSnake, direction) {
+		this.cellFirst = cellFirst;
+		this.color = color;
+		this.lengthSnake = lengthSnake;
+		this.direction = direction;
+		this.arr = [];
+	}
+	createSnake () {
+		for (let i = 0; i < this.lengthSnake; i++) {
+			var pos = this.cellFirst-i;
+		      this.arr.push(pos); 
+		}
+	}
+	snakeArrZero () {
+		this.arr = [];
+		btn.innerText= "Try Again?";
+		return;
+	}
+	draw () {
+		 
+				var head = this.arr[0];
+	  		this.arr.splice(this.arr.length-1, 1); 
+	  		this.arr.splice(0,0,head += this.direction);
+						
+		       if(this.arr[0] > 400 && this.direction == 20){
+					   console.log(23);
+						 bannerWatch (wall, "wall_anim", 2000);
+						 this.snakeArrZero();
+						 
+					 }
+		   			if(this.arr[0] < 0 && this.direction == -20){
+					     console.log(34);
+							bannerWatch (wall, "wall_anim", 2000);
+							this.snakeArrZero();
+							
+					 }
+		
+		
+		     for (let i = 0; i < this.arr.length; i++) {
+		         cells[this.arr[i]].style.background = this.color;
+     }
+	}
+	headPosition () {
+		return this.arr[0];
+	}
+	keyValue () {
+		document.addEventListener("keydown",(e)=>{
+			if(e.keyCode == 38 || e.keyCode == 87 ){
+				//top
+			this.direction = -20;
+			}else if( e.keyCode == 39 || e.keyCode == 68 ){
+				//right
+				this.direction = 1;
+			}else if( e.keyCode == 40 || e.keyCode == 83 ){
+				//down
+				this.direction = 20;
+			}else if( e.keyCode == 37 || e.keyCode == 65 ){
+				//left
+				this.direction = -1;
+			}
+		});
+	}
+	eat_now () {
+		this.arr.length++;
+		 bannerWatch (banner, "banner_animation", 1000);
+	}
+}
+
+class Food {
+	constructor () {
+		this.position = Math.floor(Math.random() * 400);
+		this.color = 'hsl('+Math.floor(Math.random()*365)+', 100%, 50%)';
+	}
+	draw_food () {
+		cells[this.position].style.background = this.color;
+	}
+	repositionFood () {
+		this.position = Math.floor(Math.random() * 400);
+		this.color = 'hsl('+Math.floor(Math.random()*365)+', 100%, 50%)';
+	}
+	positionFood () {
+		return this.position;
+	}
+}
+var fieldMatrix = new Field ();
+var snakeItem = new Snake(150, snakeColor, snakeLength , 1);
+var snakeFood = new Food ();
+
+snakeItem.keyValue();      // snake control
+snakeItem.createSnake ();  // she`s alive!!!!
+
+function aliveAll () {
+	fieldMatrix.screenReload();
+	snakeItem.draw ();       //paint snake
+	snakeFood.draw_food (); //paint food
+	
+	if (snakeFood.positionFood() == snakeItem.headPosition()) {
+			snakeItem.eat_now();
+		  snakeFood.repositionFood ();
+			}
+}
+	
+	//
+	function bannerWatch (bannerSelf, addClass, animationTime) { // banners watch function :)
+		bannerSelf.classList.add(addClass);
+		setTimeout(()=>{
+			bannerSelf.classList.remove(addClass);
+		},animationTime);
+	}
+	//
+	
+ setInterval(aliveAll, speed); // this start draw game
+
+}else {
+		let cells = document.querySelectorAll('.cell');
+		btn.innerText= "Start Game";
+	   
+		for(var i = 0; i < cells.length; i++){
+			_field.removeChild (cells[i]);
+		}	
+		
+  }
+});
+
